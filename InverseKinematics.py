@@ -10,18 +10,56 @@ class InverseKinematics:
         self.angle_in_range = False
 
     def get_angles(self, y, z, leg_array):
-
+        x = 50;
+        z = 0
+        
+        s = self.constant.s
         angle_tetha = 0
         phi = 0
         alpha = 0
         beta = 0
+        gamma = 0
+        
         # default position for z
         z = z + 155
         
-        # diagonal leg error offset
-        if leg_array == self.constant.front_left_leg or leg_array == self.constant.back_right_leg:
-            z = z - 20
-
+        # diagonal legs error offset
+        #if leg_array == self.constant.front_left_leg or leg_array == self.constant.back_right_leg:
+         #   z = z - 20
+        
+        ###############inverse kinematics######################
+        if x<0:
+            x = x - s
+            g = math.sqrt(z*z + x*x)
+            #print(f"z = {z}")
+            z = math.sqrt(g*g - s*s)            # z_new is set
+            #print(f"z_new = {z}")
+            epsilon_1 = math.atan(z / math.fabs(x)) * 180 / math.pi
+            epsilon_2 = math.acos((z*z + g*g - s*s) / (2*z*g)) * 180 / math.pi
+            gamma = 90 - epsilon_1 - epsilon_2 
+            gamma = 90 - gamma
+        elif x>s:
+            x = x - s
+            g = math.sqrt(z*z + x*x)
+            z = math.sqrt(g*g - s*s)            # z_new is set
+            epsilon_1 = math.acos((s*s + g*g - z*z) / (2 * s * g)) * 180 / math.pi
+            epsilon_2 = math.asin(x / g) * 180 / math.pi
+            gamma = 90 - (epsilon_1 - epsilon_2)
+            gamma = 90 + gamma
+        elif 0<x<s:
+            x = s - x
+            g = math.sqrt(x*x + z*z)
+            z = math.sqrt(g*g - s*s)            # z_new is set
+            epsilon_1 = math.asin(x / g) * 180 / math.pi
+            epsilon_2 = math.asin(z / g) * 180 / math.pi
+            gamma = 90 - epsilon_1 - epsilon_2
+            gamma = 90 + gamma 
+            
+        print(f"Gamma = {gamma}")
+        print(f"epsilon_1 = {epsilon_1}")
+        print(f"epsilon_2 = {epsilon_2}")
+        print()
+        
         l_hyp = math.sqrt(y * y + z * z)
         beta_rad = math.acos((2 * self.length_1 * self.length_1 - l_hyp * l_hyp) / (2 * self.length_1 * self.length_1))
         beta = beta_rad * 180 / math.pi

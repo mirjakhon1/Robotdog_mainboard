@@ -1,10 +1,12 @@
 
 class Constants:
-    servoMin = 944  # angle - 0
-    servoMax = 2222  # angle - 180
-    servoMiddle = 1500  # angle - ?
-    degree_1 = 1.46  # adjust
-    length_1 = 109
+    servoMin = 944      # angle - 0
+    servoMax = 2222     # angle - 180
+    servoMiddle = 1500  # to adjust
+    degree_1 = 1.46     # to adjust
+    length_1 = 109      # leg length
+    s = 41.5            # shoulder offset length
+    
     # leg indices
     front_left_leg = [0, 1, 2]
     front_right_leg = [3, 4, 5]

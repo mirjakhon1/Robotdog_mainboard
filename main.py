@@ -19,7 +19,7 @@ def checkServoAngle():
 def main():
     
     # 90 degree angle of shoulder servos
-    servo_control.turn_to_angle(85, 0)
+    servo_control.turn_to_angle(85, 0) # 85
     servo_control.turn_to_angle(90, 3)
     servo_control.turn_to_angle(85, 6)
     servo_control.turn_to_angle(80, 9)
