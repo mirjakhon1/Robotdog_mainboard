@@ -73,14 +73,18 @@ class MovementControl:
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
             self._move_dir(y_calc, z_calc, self.retracting_legs[1])
 
-    def _move_dir(self, y, z, leg_array):
+    def _move_dir(self, x, y, z, leg_array):
         # calls inverse kinematics and move the leg
-        alpha, beta, angle_limit_check = self.inverse_kin.get_angles(y, z, leg_array)
-        #print(f"Alpha {alpha}")
-        #print(f"Beta {beta}")
+        alpha, beta, gamma, angle_limit_check = self.inverse_kin.get_angles(x, y, z, leg_array)
+        print(f"Alpha {alpha}")
+        print(f"Beta {beta}")
+        print(f"Gamma {gamma}")
+        print()
+
+
 
         if angle_limit_check:
-            #self.servo_control.turn_to_angle(90, leg_array[0])  # adjust for gamma
+            self.servo_control.turn_to_angle(gamma, leg_array[0])  # adjust for gamma
             self.servo_control.turn_to_angle(alpha, leg_array[1])
             self.servo_control.turn_to_angle(beta, leg_array[2])
         else:

@@ -9,9 +9,7 @@ class InverseKinematics:
 
         self.angle_in_range = False
 
-    def get_angles(self, y, z, leg_array):
-        x = 50;
-        z = 0
+    def get_angles(self, x, y, z, leg_array):
         
         s = self.constant.s
         angle_tetha = 0
@@ -24,16 +22,15 @@ class InverseKinematics:
         z = z + 155
         
         # diagonal legs error offset
-        #if leg_array == self.constant.front_left_leg or leg_array == self.constant.back_right_leg:
-         #   z = z - 20
+        if leg_array == self.constant.front_left_leg or leg_array == self.constant.back_right_leg:
+            z = z - 20
         
+        z_old = z
         ###############inverse kinematics######################
         if x<0:
             x = x - s
             g = math.sqrt(z*z + x*x)
-            #print(f"z = {z}")
             z = math.sqrt(g*g - s*s)            # z_new is set
-            #print(f"z_new = {z}")
             epsilon_1 = math.atan(z / math.fabs(x)) * 180 / math.pi
             epsilon_2 = math.acos((z*z + g*g - s*s) / (2*z*g)) * 180 / math.pi
             gamma = 90 - epsilon_1 - epsilon_2 
@@ -54,11 +51,20 @@ class InverseKinematics:
             epsilon_2 = math.asin(z / g) * 180 / math.pi
             gamma = 90 - epsilon_1 - epsilon_2
             gamma = 90 + gamma 
+        else:
+            gamma = 90
             
-        print(f"Gamma = {gamma}")
-        print(f"epsilon_1 = {epsilon_1}")
-        print(f"epsilon_2 = {epsilon_2}")
-        print()
+        # invert z because of the orientation of z axis
+        # if new z is increased by 10, this will decrease it by 10 instead
+        if z > z_old:
+            z = z + (z_old - z) * 2
+        elif z < z_old:
+            z = z + (z_old - z) * 2
+            
+        print(f"Z = {z}")
+        #print(f"epsilon_1 = {epsilon_1}")
+        #print(f"epsilon_2 = {epsilon_2}")
+        #print()
         
         l_hyp = math.sqrt(y * y + z * z)
         beta_rad = math.acos((2 * self.length_1 * self.length_1 - l_hyp * l_hyp) / (2 * self.length_1 * self.length_1))
@@ -83,7 +89,7 @@ class InverseKinematics:
 
         self._check_angle_limits(leg_array, alpha, beta)
 
-        return alpha, beta, self.angle_in_range
+        return alpha, beta, gamma, self.angle_in_range
 
     def _check_angle_limits(self, leg_array, alpha, beta):
         # assigning angle limits of specific leg to angle_limits variable

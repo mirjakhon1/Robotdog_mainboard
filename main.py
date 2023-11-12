@@ -35,12 +35,20 @@ def main():
         servo_control.turn_to_angle(90, 11)
         
     while True:
-        move_control.take_step(30)
-        time.sleep(0.1)
+        #move_control.take_step(30)
+        
         #move_control._move_dir(0, -30, constants.back_right_leg)
         #move_control._move_dir(0, -30, constants.back_left_leg)
-        #move_control._move_dir(0, -30, constants.front_right_leg)
+        for x in range(-80, 40, 1):
+            move_control._move_dir(x, 0, 0, constants.front_right_leg)
+            time.sleep(0.05)
+            print(f"x === {x}")
+        for x in range(40, -80, -1):
+            move_control._move_dir(x, 0, 0, constants.front_right_leg)
+            time.sleep(0.05)
+            print(f"x = {x}")
         #move_control._move_dir(0, -30, constants.front_left_leg)
+        time.sleep(1)
         
     while False:
         
