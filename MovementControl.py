@@ -57,21 +57,21 @@ class MovementControl:
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], 0, step_size)
             # 100 is max of z value, negative 40 because z axis is inverted
             z_calc = map_value(z, 0, 100, -30, 25) # netive z is downwards
-            self._move_dir(y_calc, z_calc, self.moving_legs[0])
+            self._move_dir(0, y_calc, z_calc, self.moving_legs[0])
 
             # inverting y values for the other moving leg in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], 0, -step_size)
 
-            self._move_dir(y_calc, z_calc, self.moving_legs[1])
+            self._move_dir(0, y_calc, z_calc, self.moving_legs[1])
             
             # retracting other 2 legs in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], step_size, 0)
             z_calc = map_value(z, z_values_mapped[0], 100, -30, -40)
-            self._move_dir(y_calc, z_calc, self.retracting_legs[0]) 
+            self._move_dir(0, y_calc, z_calc, self.retracting_legs[0]) 
 
             # inverting y values for the other retracting leg in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
-            self._move_dir(y_calc, z_calc, self.retracting_legs[1])
+            self._move_dir(0, y_calc, z_calc, self.retracting_legs[1])
 
     def _move_dir(self, x, y, z, leg_array):
         # calls inverse kinematics and move the leg

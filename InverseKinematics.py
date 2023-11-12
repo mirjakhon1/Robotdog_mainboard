@@ -54,6 +54,7 @@ class InverseKinematics:
         else:
             gamma = 90
             
+        gamma = 180 - gamma
         # invert z because of the orientation of z axis
         # if new z is increased by 10, this will decrease it by 10 instead
         if z > z_old:
@@ -61,6 +62,17 @@ class InverseKinematics:
         elif z < z_old:
             z = z + (z_old - z) * 2
             
+        
+        # gamma offset because 90 degrees is not a right angle
+        if leg_array == self.constant.front_left_leg:
+            gamma = gamma - 5           # 5 degree offset
+        elif leg_array == self.constant.front_right_leg:
+            gamma = gamma               # no offset
+        elif leg_array == self.constant.back_left_leg:
+            gamma = gamma - 5
+        elif leg_array == self.constant.back_right_leg:
+            gamma = gamma - 10
+        
         print(f"Z = {z}")
         #print(f"epsilon_1 = {epsilon_1}")
         #print(f"epsilon_2 = {epsilon_2}")
@@ -86,12 +98,13 @@ class InverseKinematics:
         if leg_array == self.constant.front_right_leg or leg_array == self.constant.back_left_leg:
             alpha = 180 - alpha
             beta = 180 - beta
+            gamma = 180 - gamma
 
-        self._check_angle_limits(leg_array, alpha, beta)
+        self._check_angle_limits(leg_array, alpha, beta, gamma)
 
         return alpha, beta, gamma, self.angle_in_range
 
-    def _check_angle_limits(self, leg_array, alpha, beta):
+    def _check_angle_limits(self, leg_array, alpha, beta, gamma):
         # assigning angle limits of specific leg to angle_limits variable
         angle_limits = []
         if leg_array[0] == 0:
@@ -104,8 +117,16 @@ class InverseKinematics:
             angle_limits = self.constant.servoAngleLimitsLeg4
 
         # setting boundaries for alpha, beta, gamma
-        if (not angle_limits[2] < alpha < angle_limits[3]) or \
-                (not angle_limits[4] < beta < angle_limits[5]):
+        if (not angle_limits[0] < gamma < angle_limits[1]) or \
+            (not angle_limits[2] < alpha < angle_limits[3]) or (not angle_limits[4] < beta < angle_limits[5]):
+                    
+            if gamma < angle_limits[0]:
+                gamma = angle_limits[0]
+                print("Gamma angle boundary limit! (min angle reached)")
+            elif gamma > angle_limits[1]:
+                gamma = angle_limits[1]
+                print("Gamma angle boundary limit! (max angle reached)")
+                
             if alpha < angle_limits[2]:
                 alpha = angle_limits[2]
                 print("Alpha angle boundary limit! (min angle reached)")
@@ -119,7 +140,8 @@ class InverseKinematics:
             elif beta > angle_limits[5]:
                 beta = angle_limits[5]
                 print("Beta angle boundary limit! (max angle reached)")
-
+            
+            
             self.angle_in_range = False
 
         else:
