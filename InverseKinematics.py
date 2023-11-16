@@ -54,7 +54,7 @@ class InverseKinematics:
         else:
             gamma = 90
             
-        gamma = 180 - gamma
+       
         # invert z because of the orientation of z axis
         # if new z is increased by 10, this will decrease it by 10 instead
         if z > z_old:
@@ -69,10 +69,15 @@ class InverseKinematics:
         elif leg_array == self.constant.front_right_leg:
             gamma = gamma               # no offset
         elif leg_array == self.constant.back_left_leg:
-            gamma = gamma - 5
+            gamma = gamma + 5   # old value -5
         elif leg_array == self.constant.back_right_leg:
-            gamma = gamma - 10
+            gamma = gamma + 10  # old value -10
         
+        # mirroring angles for shoulder angle 
+        if leg_array == self.constant.back_right_leg or leg_array == self.constant.front_right_leg:
+            gamma = 180 - gamma
+         
+         
         print(f"Z = {z}")
         #print(f"epsilon_1 = {epsilon_1}")
         #print(f"epsilon_2 = {epsilon_2}")
@@ -99,6 +104,7 @@ class InverseKinematics:
             alpha = 180 - alpha
             beta = 180 - beta
             gamma = 180 - gamma
+            
 
         self._check_angle_limits(leg_array, alpha, beta, gamma)
 

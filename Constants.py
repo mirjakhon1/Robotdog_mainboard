@@ -5,7 +5,7 @@ class Constants:
     servoMiddle = 1500  # to adjust
     degree_1 = 1.46     # to adjust
     length_1 = 109      # leg length
-    s = 58.5            # shoulder offset length, previously 41.5
+    s = 78.5            # shoulder offset length, previously 41.5
     
     # leg indices
     front_left_leg = [0, 1, 2]

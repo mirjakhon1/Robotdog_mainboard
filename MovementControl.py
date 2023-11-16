@@ -29,11 +29,8 @@ class MovementControl:
     def take_step(self,  step_size):
         print("Taking a step")
 
-        # Define the time step and the number of steps // add time.sleep(time_step) to slow down movement
-        execution_time = 1
-        time_step = 0.1  # Adjust this value as needed for faster execution
         # num_steps defines how fine the movement is along the arc
-        num_steps = int(execution_time / time_step)
+        num_steps = 10
 
         # data set for an arc, used in spline to create an interpolation
         y_values_traj = np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
@@ -72,6 +69,10 @@ class MovementControl:
             # inverting y values for the other retracting leg in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
             self._move_dir(0, y_calc, z_calc, self.retracting_legs[1])
+
+    def turn_left(self):
+        print("Turning left...")
+        
 
     def _move_dir(self, x, y, z, leg_array):
         # calls inverse kinematics and move the leg
