@@ -24,6 +24,8 @@ class InverseKinematics:
         # diagonal legs error offset
         if leg_array == self.constant.front_left_leg or leg_array == self.constant.back_right_leg:
             z = z - 20
+        if leg_array == self.constant.front_right_leg:
+            z = z - 20
         
         z_old = z
         ###############inverse kinematics######################
@@ -67,7 +69,7 @@ class InverseKinematics:
         if leg_array == self.constant.front_left_leg:
             gamma = gamma - 5           # 5 degree offset
         elif leg_array == self.constant.front_right_leg:
-            gamma = gamma               # no offset
+            gamma = gamma - 5               # no offset
         elif leg_array == self.constant.back_left_leg:
             gamma = gamma + 5   # old value -5
         elif leg_array == self.constant.back_right_leg:
@@ -78,10 +80,6 @@ class InverseKinematics:
             gamma = 180 - gamma
          
          
-        print(f"Z = {z}")
-        #print(f"epsilon_1 = {epsilon_1}")
-        #print(f"epsilon_2 = {epsilon_2}")
-        #print()
         
         l_hyp = math.sqrt(y * y + z * z)
         beta_rad = math.acos((2 * self.length_1 * self.length_1 - l_hyp * l_hyp) / (2 * self.length_1 * self.length_1))
@@ -105,7 +103,9 @@ class InverseKinematics:
             beta = 180 - beta
             gamma = 180 - gamma
             
-
+        print(f"Beta = {beta}")
+        print(f"z = {z}")
+        print()
         self._check_angle_limits(leg_array, alpha, beta, gamma)
 
         return alpha, beta, gamma, self.angle_in_range
