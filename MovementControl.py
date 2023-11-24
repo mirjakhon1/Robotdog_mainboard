@@ -25,7 +25,8 @@ class MovementControl:
         # set of moving legs, used to switch legs each step
         self.moving_legs = [self.constant.front_left_leg, self.constant.back_right_leg]
         self.retracting_legs = [self.constant.front_right_leg, self.constant.back_left_leg]
-
+    
+    #obsolete
     def take_step(self,  step_size):
         print("Taking a step")
 
@@ -103,8 +104,8 @@ class MovementControl:
         for y, z in zip(y_values_mapped, z_values_mapped):
             
             
-            if (self.moving_legs[0] == self.constant.front_left_leg and direction == "left") or \
-                (self.moving_legs[0] == self.constant.front_right_leg and direction == "right"):
+            if (self.moving_legs[0] == self.constant.front_left_leg and direction == -1) or \
+                (self.moving_legs[0] == self.constant.front_right_leg and direction == 1):
                 step_size = 30 / turn_angle
                 step_height = 25 / turn_angle + 5
             else: 
@@ -116,8 +117,8 @@ class MovementControl:
             z_calc = map_value(z, 0, 100, -30, step_height) # netive z is downwards
             self._move_dir(0, y_calc, z_calc, self.moving_legs[0])
             
-            if (self.moving_legs[1] == self.constant.back_left_leg and direction == "left") or \
-                (self.moving_legs[1] == self.constant.back_right_leg and direction == "right"):
+            if (self.moving_legs[1] == self.constant.back_left_leg and direction == -1) or \
+                (self.moving_legs[1] == self.constant.back_right_leg and direction == 1):
                 step_size = 30 / turn_angle
                 step_height = 25 / turn_angle + 5
             else: 
@@ -130,8 +131,8 @@ class MovementControl:
             self._move_dir(0, y_calc, z_calc, self.moving_legs[1])
             
             
-            if (self.retracting_legs[0] == self.constant.front_left_leg and direction == "left") or \
-                (self.retracting_legs[0] == self.constant.front_right_leg and direction == "right"):
+            if (self.retracting_legs[0] == self.constant.front_left_leg and direction == -1) or \
+                (self.retracting_legs[0] == self.constant.front_right_leg and direction == 1):
                 step_size = 30 / turn_angle
             else: 
                 step_size = 30
@@ -141,8 +142,8 @@ class MovementControl:
             self._move_dir(0, y_calc, z_calc, self.retracting_legs[0]) 
             
             
-            if (self.retracting_legs[1] == self.constant.back_left_leg and direction == "left") or \
-                (self.retracting_legs[1] == self.constant.back_right_leg and direction == "right"):
+            if (self.retracting_legs[1] == self.constant.back_left_leg and direction == -1) or \
+                (self.retracting_legs[1] == self.constant.back_right_leg and direction == 1):
                 step_size = 30 / turn_angle
             else: 
                 step_size = 30

@@ -103,9 +103,9 @@ class InverseKinematics:
             beta = 180 - beta
             gamma = 180 - gamma
             
-        print(f"Beta = {beta}")
-        print(f"z = {z}")
-        print()
+        #print(f"Beta = {beta}")
+        #print(f"z = {z}")
+        #print()
         self._check_angle_limits(leg_array, alpha, beta, gamma)
 
         return alpha, beta, gamma, self.angle_in_range
