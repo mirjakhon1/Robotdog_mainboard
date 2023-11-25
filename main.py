@@ -18,7 +18,7 @@ radio = NRF24(GPIO, spidev.SpiDev())
 radio.begin(1, 17)
 
 radio.setPayloadSize(32)
-radio.setChannel(0x76)
+radio.setChannel(0x30)
 radio.setDataRate(NRF24.BR_1MBPS)
 radio.setPALevel(NRF24.PA_MIN)
 
@@ -66,15 +66,15 @@ def main():
     default_position()
     
     # speed variables
-    default_speed = 0.3
+    default_speed = 0.2
     current_speed = default_speed
-    max_speed = 0.05
-    min_speed = 1
+    max_speed = 0.051
+    min_speed = 0.69
     
-    default_turn_speed = 1.5
+    default_turn_speed = 2.5
     current_turn_speed = default_turn_speed
-    max_turn_speed = 2
-    min_turn_speed = 1.05
+    max_turn_speed = 4.49
+    min_turn_speed = 1.51
     turn_direction = 0              # -1 left, 0 forward, 1 right
     
     step_size = 30
@@ -84,7 +84,6 @@ def main():
     while True:
         
         if radio.available(0):	
-            start_walking = True
             	
             receivedMessage = []
             radio.read(receivedMessage, radio.getDynamicPayloadSize())
@@ -101,13 +100,33 @@ def main():
             # direction, turn_direction, speed_change, turn_speed_change
             data_list = received_data.split(",")
         
-        if data_list:
-            start_walking = int(data_list[0])
+        if data_list and radio.available(0):
+            if int(data_list[0]) != 0:
+                start_walking = True
+            else:
+                start_walking = False
         else:
             start_walking = False
         
         if start_walking:
             turn_direction = int(data_list[1])
+            
+            # walk backwards?
+            if int(data_list[0]) == -1:
+                step_size = -abs(step_size)
+            else:
+                step_size = abs(step_size)
+            
+            # adjust the speed and turn speed
+            if int(data_list[2]) == 0 and current_speed > max_speed:
+                current_speed -= 0.05
+            elif int(data_list[3]) == 0 and current_speed < min_speed:
+                current_speed += 0.05
+            elif int(data_list[4]) == 0 and current_turn_speed < max_turn_speed:
+                current_turn_speed += 0.5
+            elif int(data_list[5]) == 0 and current_turn_speed > min_turn_speed:
+                current_turn_speed -= 0.5
+            
             move_control.take_step_2(step_size, turn_direction, current_turn_speed)
             time.sleep(current_speed)
             

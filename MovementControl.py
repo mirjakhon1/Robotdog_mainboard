@@ -74,8 +74,8 @@ class MovementControl:
             self._move_dir(0, y_calc, z_calc, self.retracting_legs[1])
             #time.sleep(0.5)
         
-    def take_step_2(self,  step_size, direction, turn_angle):
-        print("Taking a step")
+    def take_step_2(self,  step_size_passed, direction, turn_angle):
+        #print("Taking a step")
 
         # num_steps defines how fine the movement is along the arc
         num_steps = 15
@@ -106,10 +106,10 @@ class MovementControl:
             
             if (self.moving_legs[0] == self.constant.front_left_leg and direction == -1) or \
                 (self.moving_legs[0] == self.constant.front_right_leg and direction == 1):
-                step_size = 30 / turn_angle
+                step_size = step_size_passed / turn_angle
                 step_height = 25 / turn_angle + 5
             else: 
-                step_size = 30
+                step_size = step_size_passed
                 step_height = 25
             
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], 0, step_size)
@@ -119,10 +119,10 @@ class MovementControl:
             
             if (self.moving_legs[1] == self.constant.back_left_leg and direction == -1) or \
                 (self.moving_legs[1] == self.constant.back_right_leg and direction == 1):
-                step_size = 30 / turn_angle
+                step_size = step_size_passed / turn_angle
                 step_height = 25 / turn_angle + 5
             else: 
-                step_size = 30
+                step_size = step_size_passed
                 step_height = 25
                 
             # inverting y values for the other moving leg in diagonal
@@ -133,9 +133,9 @@ class MovementControl:
             
             if (self.retracting_legs[0] == self.constant.front_left_leg and direction == -1) or \
                 (self.retracting_legs[0] == self.constant.front_right_leg and direction == 1):
-                step_size = 30 / turn_angle
+                step_size = step_size_passed / turn_angle
             else: 
-                step_size = 30
+                step_size = step_size_passed
             # retracting other 2 legs in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], step_size, 0)
             z_calc = map_value(z, z_values_mapped[0], 100, -30, -35)
@@ -144,9 +144,9 @@ class MovementControl:
             
             if (self.retracting_legs[1] == self.constant.back_left_leg and direction == -1) or \
                 (self.retracting_legs[1] == self.constant.back_right_leg and direction == 1):
-                step_size = 30 / turn_angle
+                step_size = step_size_passed / turn_angle
             else: 
-                step_size = 30
+                step_size = step_size_passed
                 
             # inverting y values for the other retracting leg in diagonal
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
