@@ -25,54 +25,6 @@ class MovementControl:
         # set of moving legs, used to switch legs each step
         self.moving_legs = [self.constant.front_left_leg, self.constant.back_right_leg]
         self.retracting_legs = [self.constant.front_right_leg, self.constant.back_left_leg]
-    
-    #obsolete
-    def take_step(self,  step_size):
-        print("Taking a step")
-
-        # num_steps defines how fine the movement is along the arc
-        num_steps = 10
-
-        # data set for an arc, used in spline to create an interpolation
-        y_values_traj = np.array([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
-        z_values_traj = np.array([0., 15, 30, 46, 62, 77, 100, 67, 33, 0.])
-        #spline = CubicSpline(y_values_traj, z_values_traj)
-        linear_interp = interp1d(y_values_traj, z_values_traj, kind="linear")
-
-        # creating set of evenly spaced y values (list) to feed it to spline which will return z values
-        #y_values_mapped = np.linspace(y_values_traj[0], y_values_traj[-1], num_steps)
-        #z_values_mapped = spline(y_values_mapped)
-        y_values_mapped = np.linspace(0, 90, 10)
-        z_values_mapped = linear_interp(y_values_mapped)
-
-        # save moving leg set to switch it every step (every cycle)
-        if self.moving_legs[0] == self.constant.front_left_leg:
-            self.moving_legs = [self.constant.front_right_leg, self.constant.back_left_leg]
-            self.retracting_legs = [self.constant.front_left_leg, self.constant.back_right_leg]
-            
-        else:
-            self.moving_legs = [self.constant.front_left_leg, self.constant.back_right_leg]
-            self.retracting_legs = [self.constant.front_right_leg, self.constant.back_left_leg]
-            
-        for y, z in zip(y_values_mapped, z_values_mapped):
-            y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], 0, step_size)
-            # 100 is max of z value, negative 40 because z axis is inverted
-            z_calc = map_value(z, 0, 100, -30, 25) # netive z is downwards
-            self._move_dir(0, y_calc, z_calc, self.moving_legs[0])
-
-            # inverting y values for the other moving leg in diagonal
-            y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], 0, -step_size)
-            self._move_dir(0, y_calc, z_calc, self.moving_legs[1])
-            
-            # retracting other 2 legs in diagonal
-            y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], step_size, 0)
-            z_calc = map_value(z, z_values_mapped[0], 100, -30, -40)
-            self._move_dir(0, y_calc, z_calc, self.retracting_legs[0]) 
-
-            # inverting y values for the other retracting leg in diagonal
-            y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
-            self._move_dir(0, y_calc, z_calc, self.retracting_legs[1])
-            #time.sleep(0.5)
         
     def take_step_2(self,  step_size_passed, direction, turn_angle):
         #print("Taking a step")
@@ -152,7 +104,8 @@ class MovementControl:
             y_calc = map_value(y, y_values_mapped[0], y_values_mapped[-1], -step_size, 0)
             self._move_dir(0, y_calc, z_calc, self.retracting_legs[1])
             #time.sleep(0.5)
-            
+    
+    # not complete
     def turn_left(self, turn_step_size):
         print("Turning left...")
         
@@ -195,6 +148,12 @@ class MovementControl:
             self._move_dir(x_calc, 0, z_calc, self.retracting_legs[1])
         
 
+    def do_pose_1(self):
+        self._move_dir(0, 0, 30, self.constant.back_right_leg)
+        self._move_dir(0, 0, 30, self.constant.back_left_leg)
+        self._move_dir(0, 0, -50, self.constant.front_right_leg)
+        self._move_dir(0, 0, -50, self.constant.front_left_leg)
+        
     def _move_dir(self, x, y, z, leg_array):
         # calls inverse kinematics and move the leg
         alpha, beta, gamma, angle_limit_check = self.inverse_kin.get_angles(x, y, z, leg_array)
